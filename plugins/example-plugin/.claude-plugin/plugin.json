@@ -1,0 +1,13 @@
+{
+  "name": "example-plugin",
+  "version": "0.1.0",
+  "description": "Reference plugin that shows the layout every plugin in this marketplace follows. Copy it to start a new plugin.",
+  "author": {
+    "name": "mcmaxwell",
+    "url": "https://github.com/mcmaxwell"
+  },
+  "homepage": "https://github.com/mcmaxwell/devdigest-plugins/tree/main/plugins/example-plugin",
+  "repository": "https://github.com/mcmaxwell/devdigest-plugins",
+  "license": "MIT",
+  "keywords": ["template", "plugin-authoring", "reference"]
+}

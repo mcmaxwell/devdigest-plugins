@@ -1,0 +1,63 @@
+name: Deploy site
+
+# Builds site/ and publishes it to GitHub Pages.
+# - On every push to main: the normal release path.
+# - On workflow_dispatch: run it against any branch or tag to redeploy that
+#   revision. scripts/rollback.mjs --site <ref> tags a known-good commit and
+#   dispatches this workflow on the tag.
+# The jobs skip themselves until site/package.json exists.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    outputs:
+      present: ${{ steps.site.outputs.present }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: site
+        name: Detect site
+        run: |
+          if [ -f site/package.json ]; then echo present=true >> "$GITHUB_OUTPUT"; else echo present=false >> "$GITHUB_OUTPUT"; echo "site/ not present yet, nothing to deploy"; fi
+      - if: steps.site.outputs.present == 'true'
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+      - if: steps.site.outputs.present == 'true'
+        run: npm ci
+        working-directory: site
+      - if: steps.site.outputs.present == 'true'
+        run: npm run build
+        working-directory: site
+        env:
+          SITE_BASE_URL: https://mcmaxwell.github.io/devdigest-plugins
+      - if: steps.site.outputs.present == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site/dist
+
+  deploy:
+    needs: build
+    if: needs.build.outputs.present == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "devdigest-plugins",
+  "description": "DevDigest plugins for Claude Code: skills, agents, commands and hooks for AI-assisted code review workflows",
+  "version": "0.1.0",
+  "owner": {
+    "name": "mcmaxwell",
+    "url": "https://github.com/mcmaxwell"
+  },
+  "plugins": [
+    {
+      "name": "example-plugin",
+      "displayName": "Example Plugin",
+      "description": "Reference plugin that shows the layout every plugin in this marketplace follows. Copy it to start a new plugin.",
+      "version": "0.1.0",
+      "author": {
+        "name": "mcmaxwell",
+        "url": "https://github.com/mcmaxwell"
+      },
+      "source": "./plugins/example-plugin",
+      "homepage": "https://github.com/mcmaxwell/devdigest-plugins/tree/main/plugins/example-plugin",
+      "repository": "https://github.com/mcmaxwell/devdigest-plugins",
+      "license": "MIT",
+      "category": "development",
+      "keywords": ["template", "plugin-authoring", "reference"]
+    }
+  ]
+}

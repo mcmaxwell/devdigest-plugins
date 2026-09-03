@@ -1,0 +1,3 @@
+# Paths the English-only check skips. One entry per line: an exact path, a
+# directory prefix ending in "/", or a "*.ext" suffix. Comment the reason.
+LICENSE

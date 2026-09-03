@@ -1,0 +1,16 @@
+{
+  "name": "devdigest-plugins",
+  "private": true,
+  "description": "Claude Code plugin marketplace maintenance scripts",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "validate": "claude plugin validate . --strict",
+    "check:english": "node scripts/check-english.mjs",
+    "test": "node --test scripts/*.test.mjs",
+    "release": "node scripts/release.mjs",
+    "rollback": "node scripts/rollback.mjs"
+  }
+}
