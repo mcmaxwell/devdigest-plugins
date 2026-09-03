@@ -15,6 +15,10 @@ Or browse the catalogue in `/plugin` under Discover.
 
 | Plugin | What it does |
 | --- | --- |
+| `sdd-engineering` | Spec Driven Development: specreator, implementation-planner, implementer and plan-verifier agents, the run-plan and workflow-retro skills, and the spec gate hook. Installs the three plugins below as dependencies. |
+| `architecture-reviewer` | arch-evidence runs the project's mechanical boundary checks, architecture-reviewer judges the change against the project's written boundaries. |
+| `research-tools` | The researcher agent: repository and external questions answered with evidence and citations. |
+| `engineering-paved-path` | The shared skills: onion-architecture, frontend-ui-architecture, engineering-insights, mermaid-diagram, security. |
 | `example-plugin` | Reference layout for new plugins; ships the `plugin-authoring` skill. |
 
 ## For teams
@@ -30,7 +34,7 @@ Everyone who opens the repository gets the same set.
     }
   },
   "enabledPlugins": {
-    "example-plugin@devdigest-plugins": true
+    "sdd-engineering@devdigest-plugins": true
   }
 }
 ```

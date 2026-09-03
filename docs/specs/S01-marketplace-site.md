@@ -39,7 +39,7 @@ Non-goals:
 - No accounts, no comments, no ratings, no telemetry that leaves the browser. The site collects nothing about visitors.
 - No live GitHub API calls from the browser. Stars, commit dates and validation results are captured at build time.
 - No semantic (embedding) search in the first release. See Open questions.
-- No translation of artifact content. The interface has two languages; the content has one.
+- No translation of artifact content or of the interface. The repository is English; a locale file architecture exists for a later language.
 - No installation from the site. Claude Code installs plugins; the site hands over the command.
 - No indexing of plugins whose source is outside this repository. See Open questions.
 
@@ -59,7 +59,6 @@ Non-goals:
 - As a contributor, I press "Report a problem" on an artifact and land on a pre-filled GitHub issue.
 - As a developer, I press "Request a skill" and land on a pre-filled GitHub issue describing what I looked for and did not find.
 - As Claude Code or a script, I fetch `catalog.json` and `search-index.json` from stable URLs and search without the page.
-- As a Ukrainian-speaking developer, I switch the interface to Ukrainian while artifact content stays English.
 - As a maintainer, I release a plugin with one command and roll a broken plugin or a broken site back with one command.
 
 ## Module interactions
@@ -87,7 +86,7 @@ flowchart LR
   end
   subgraph browser[Visitor's browser]
     SEARCH[search + filters + palette]
-    LOCAL[favourites, recents, language, theme in local storage]
+    LOCAL[favourites, recents, theme in local storage]
     ISSUES[pre-filled GitHub issue links]
   end
   MJ --> VAL --> IDX
@@ -135,7 +134,7 @@ Boundaries and what crosses them:
 
 - **Build to GitHub Pages.** The generated folder. Nothing else.
 - **Browser to GitHub.** Only navigation: links to source files and pre-filled issue URLs. No fetches to `api.github.com`.
-- **Browser to local storage.** Favourites, recently viewed, interface language, theme. Read inside a guard; the page renders identically when storage is unavailable.
+- **Browser to local storage.** Favourites, recently viewed, theme. Read inside a guard; the page renders identically when storage is unavailable.
 
 When a neighbour is unavailable:
 
@@ -179,10 +178,10 @@ Catalogue and index:
 Search:
 
 - AC-9: WHEN a visitor submits a query, the system shall return every record whose name, displayName, description, keywords or body matches at least one query term after stop words are removed, ranked with name matches above description matches above body matches; observed in the results list.
-- AC-10: WHEN a query contains a type word (plugin, skill, agent, command, hook, MCP, or their plural and Ukrainian equivalents listed in the synonym table), the system shall apply that type as a filter and remove the word from the term list; observed as the active filter chip.
+- AC-10: WHEN a query contains a type word (plugin, skill, agent, command, hook, MCP, or their plurals), the system shall apply that type as a filter and remove the word from the term list; observed as the active filter chip.
 - AC-11: WHEN a term differs from an indexed word by at most one character for words of five letters or more, the system shall still match it; observed in results for a misspelled query.
 - AC-12: WHEN a term is a prefix of an indexed word, the system shall match it; observed while typing.
-- AC-13: WHEN a term appears in the synonym table, the system shall search its English equivalents as well; observed in results for a Ukrainian query term present in the table.
+- AC-13: WHEN a term appears in the synonym table, the system shall search its listed equivalents as well; observed in results for a query term present in the table.
 - AC-14: The system shall reflect the query, the active filters and the sort order in the page URL, so that the URL reproduces the same results when opened elsewhere.
 - AC-15: IF a query yields no results, THEN the system shall show the empty state with the searched terms, the "Request a skill" action pre-filled with the query, and the three most recently changed artifacts.
 - AC-16: WHILE the search index has not finished loading, the system shall show the search box disabled with a loading indicator and keep the full artifact list navigable.
@@ -216,8 +215,8 @@ Favourites and interface:
 - AC-35: WHEN the visitor marks an artifact as favourite, the system shall keep it in local storage and list it on the favourites page on later visits in the same browser.
 - AC-36: WHEN the visitor opens an artifact page, the system shall record it in a recents list of at most ten entries in local storage.
 - AC-37: IF local storage is unavailable, THEN the system shall hide the favourites and recents features and render everything else unchanged.
-- AC-38: The system shall offer the interface in English and Ukrainian, remember the choice in local storage, and default to English.
-- AC-39: The system shall render artifact content in English only, regardless of the interface language.
+- AC-38: The system shall keep every interface string in a locale file, one file per language, and shall not carry interface text inside components; observed by a repository check over the component sources.
+- AC-39: The system shall render the interface and the artifact content in English; a further language is a further locale file, not a code change.
 - AC-40: The system shall follow the visitor's light or dark preference and offer a manual switch.
 - AC-41: The system shall publish a title, description and Open Graph image for every artifact, collection and list page; observed in the page head.
 
@@ -247,7 +246,7 @@ Release and rollback:
 - Two artifacts with the same name in different plugins: ids include the plugin, pages do not collide, search shows both with the plugin name visible.
 - A query of stop words only: treated as empty, the full list is shown, no empty state.
 - A query longer than 200 characters: truncated to 200 before searching, with a notice.
-- Non-Latin query text that is not in the synonym table: searched as-is, likely yields the empty state with the request action.
+- Non-Latin query text: searched as-is, likely yields the empty state with the request action.
 - Offline after first load: static pages already visited render from cache; search works if the index was loaded; the site states it is offline when a navigation fails.
 - Two tabs changing favourites concurrently: last write wins, no error.
 - A visitor opens an artifact URL that no longer exists after a rollback: the site's 404 page offers search pre-filled with the slug.
@@ -265,7 +264,7 @@ Release and rollback:
 - Build time under 5 minutes in GitHub Actions, including validation.
 - Accessibility: every interactive element reachable by keyboard, visible focus, WCAG 2.1 AA contrast in both themes, Lighthouse accessibility score of at least 95 on the list, card and artifact pages.
 - Works in the current and previous major versions of Chrome, Firefox, Safari and Edge.
-- No cookies. Local storage only for the four keys listed in Module interactions.
+- No cookies. Local storage only for the three keys listed in Module interactions.
 - Site size under 100 MB in total, well inside the 1 GB Pages limit.
 - Zero network requests to hosts other than the site's own origin after the page loads, except the GitHub links a visitor clicks.
 
@@ -282,9 +281,9 @@ Release and rollback:
 | Release tags and commit dates | git history of the checkout, full depth | `lastChanged` falls back to the build date and the badge says so |
 | Validation result | the validation step of the same build | build fails, so never absent on a published site |
 | Collections | one collections file in the repository, maintained by hand | no collection pages, no error |
-| Synonym table | one table in the repository, maintained by hand | English-only matching |
+| Synonym table | one English table in the repository, maintained by hand | exact and fuzzy matching only |
 | Site base URL | build configuration | build fails |
-| Visitor preferences | local storage | defaults: English, system theme, no favourites |
+| Visitor preferences | local storage | defaults: system theme, no favourites |
 
 ## Untrusted inputs
 
@@ -295,7 +294,7 @@ Release and rollback:
 - **Query string and hash of the page URL.** Reflected into the search box and the filter chips only after escaping; never written into HTML as markup.
 - **Local storage contents.** Parsed inside a guard; a malformed value is discarded and replaced with defaults.
 - **Pre-filled issue links.** Built from the artifact path and the build commit only; the visitor's query is URL-encoded and limited to 200 characters.
-- **Collections file and synonym table.** Maintainer-controlled but validated at build time: unknown plugin names and non-Latin synonyms fail the build.
+- **Collections file and synonym table.** Maintainer-controlled but validated at build time: unknown plugin names fail the build; the English check covers the table.
 
 ## Design review
 
@@ -310,7 +309,7 @@ The states below must appear in the design.
 - What's new: page and feed link; a plugin with no changelog - accepted.
 - Favourites and recents: empty, populated, storage unavailable (features hidden, no error) - accepted.
 - Command palette: open, typing, results, no results, keyboard navigation - accepted.
-- Interface language switch and theme switch positions in the header, both themes for every state - accepted.
+- Theme switch position in the header, both themes for every state - accepted.
 - Mobile layout for the search page and the artifact page, cards in one column, filters in a drawer - accepted.
 - 404 page with pre-filled search - accepted.
 - Offline notice - accepted.
@@ -320,9 +319,9 @@ The states below must appear in the design.
 
 ## Open questions
 
-- Semantic search with embeddings computed at build time and a model running in the browser. Assumption for this spec: not in the first release; the synonym table covers the Ukrainian-to-English gap for the domain words the team actually uses. A later spec can add it without changing the catalogue shape.
+- Semantic search with embeddings computed at build time and a model running in the browser. Assumption for this spec: not in the first release; the synonym table covers abbreviations and domain words. A later spec can add it without changing the catalogue shape.
 - Which artifacts count for plugins whose source is outside this repository (a `github` or `git-subdir` source). Assumption: the first release indexes only relative-path plugins; an external source gets a plugin card built from its marketplace entry alone, with no component artifacts, and the card says so.
 - Whether the collections file is hand-maintained or derived from a tag on the entries. Assumption: hand-maintained, validated at build time.
 - Whether `catalog.json` and `search-index.json` are a supported contract with a versioning promise. Assumption: yes, with `schemaVersion` and a note in `llms.txt`; breaking changes bump the number.
 - Whether the site is published under `https://mcmaxwell.github.io/devdigest-plugins/` or a custom domain. Assumption: the GitHub Pages default; a custom domain changes only the base URL.
-- Whether a Ukrainian interface is worth the maintenance of a second string table. Assumption: yes, as the team's own language; the design shows both.
+- Resolved on 2026-09-02: the repository is English only, so no second locale ships. The locale-file architecture stays, and a translation would be one added JSON file plus an entry in the English-check exceptions.

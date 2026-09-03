@@ -19,5 +19,7 @@ jobs:
         run: claude plugin validate . --strict
       - name: English-only check
         run: node scripts/check-english.mjs
+      - name: Portability check
+        run: node scripts/check-portable.mjs
       - name: Script unit tests
         run: node --test scripts/*.test.mjs

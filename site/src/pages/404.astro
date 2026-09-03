@@ -1,0 +1,26 @@
+---
+// GitHub Pages serves 404.html for unknown paths. The search link is pre-filled from the requested slug (edge case: URL gone after a rollback).
+import Base from '../layouts/Base.astro';
+import { url } from '../lib/catalog';
+import { t } from '../i18n';
+---
+<Base title={t('notFound')}>
+  <div class="wrap" style="max-width:640px;padding-block:calc(var(--space-8) * 2)">
+    <div class="tnum" style="font-family:var(--font-heading);font-size:96px;line-height:1;color:var(--color-accent);opacity:.5">404</div>
+    <h1 style="font-size:40px" data-t="notFound">{t('notFound')}</h1>
+    <p class="text-muted" style="margin-bottom:var(--space-4)" data-t="notFoundBody">{t('notFoundBody')}</p>
+    <div class="row wrap-row">
+      <a class="btn btn-primary" id="search-slug" href={url('/')}><span data-t="searchFor">{t('searchFor')}</span>&nbsp;<span id="slug"></span></a>
+      <a class="btn btn-secondary" href={url('/')} data-t="fullList">{t('fullList')}</a>
+    </div>
+  </div>
+  <script is:inline>
+    (function () {
+      var base = document.documentElement.dataset.base || '';
+      var slug = decodeURIComponent(location.pathname.replace(base, '').replace(/^\/a\//, '').replace(/\/$/, '').split('/').pop() || '').replace(/[-_]+/g, ' ');
+      if (!slug) return;
+      document.getElementById('slug').textContent = '\u201c' + slug + '\u201d';
+      document.getElementById('search-slug').href = base + '/?q=' + encodeURIComponent(slug);
+    })();
+  </script>
+</Base>

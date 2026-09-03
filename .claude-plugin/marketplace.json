@@ -9,6 +9,54 @@
   },
   "plugins": [
     {
+      "name": "architecture-reviewer",
+      "displayName": "Architecture Reviewer",
+      "description": "Read-only architecture review of a change: arch-evidence runs the project's mechanical boundary checks and architecture-reviewer judges the result against the boundaries the project writes down, with path:line evidence.",
+      "version": "0.1.0",
+      "author": {
+        "name": "mcmaxwell",
+        "url": "https://github.com/mcmaxwell"
+      },
+      "source": "./plugins/architecture-reviewer",
+      "homepage": "https://github.com/mcmaxwell/devdigest-plugins/tree/main/plugins/architecture-reviewer",
+      "repository": "https://github.com/mcmaxwell/devdigest-plugins",
+      "license": "MIT",
+      "category": "development",
+      "keywords": [
+        "agent",
+        "architecture",
+        "review",
+        "boundaries",
+        "onion-architecture",
+        "dependency-cruiser"
+      ]
+    },
+    {
+      "name": "engineering-paved-path",
+      "displayName": "Engineering Paved Path",
+      "description": "Shared engineering skills the plugin family follows: layered backend architecture, frontend organisation, per-module INSIGHTS.md lessons, Mermaid diagrams and OWASP security guidance. Install it alone to give your own agents the same paved path.",
+      "version": "0.1.0",
+      "author": {
+        "name": "mcmaxwell",
+        "url": "https://github.com/mcmaxwell"
+      },
+      "source": "./plugins/engineering-paved-path",
+      "homepage": "https://github.com/mcmaxwell/devdigest-plugins/tree/main/plugins/engineering-paved-path",
+      "repository": "https://github.com/mcmaxwell/devdigest-plugins",
+      "license": "MIT",
+      "category": "development",
+      "keywords": [
+        "skills",
+        "architecture",
+        "onion-architecture",
+        "frontend",
+        "insights",
+        "mermaid",
+        "security",
+        "paved-path"
+      ]
+    },
+    {
       "name": "example-plugin",
       "displayName": "Example Plugin",
       "description": "Reference plugin that shows the layout every plugin in this marketplace follows. Copy it to start a new plugin.",
@@ -22,7 +70,60 @@
       "repository": "https://github.com/mcmaxwell/devdigest-plugins",
       "license": "MIT",
       "category": "development",
-      "keywords": ["template", "plugin-authoring", "reference"]
+      "keywords": [
+        "template",
+        "plugin-authoring",
+        "reference"
+      ]
+    },
+    {
+      "name": "research-tools",
+      "displayName": "Research Tools",
+      "description": "The researcher agent: answers questions about the current repository or about external libraries, APIs and tools with evidence, citations and an explicit list of what could not be established.",
+      "version": "0.1.0",
+      "author": {
+        "name": "mcmaxwell",
+        "url": "https://github.com/mcmaxwell"
+      },
+      "source": "./plugins/research-tools",
+      "homepage": "https://github.com/mcmaxwell/devdigest-plugins/tree/main/plugins/research-tools",
+      "repository": "https://github.com/mcmaxwell/devdigest-plugins",
+      "license": "MIT",
+      "category": "development",
+      "keywords": [
+        "agent",
+        "research",
+        "researcher",
+        "citations",
+        "web-search"
+      ]
+    },
+    {
+      "name": "sdd-engineering",
+      "displayName": "SDD Engineering",
+      "description": "Spec Driven Development for Claude Code: specreator writes the spec, implementation-planner the plan, implementer builds it, plan-verifier checks coverage; the run-plan skill drives the loop and workflow-retro records what the run cost and taught.",
+      "version": "0.1.0",
+      "author": {
+        "name": "mcmaxwell",
+        "url": "https://github.com/mcmaxwell"
+      },
+      "source": "./plugins/sdd-engineering",
+      "homepage": "https://github.com/mcmaxwell/devdigest-plugins/tree/main/plugins/sdd-engineering",
+      "repository": "https://github.com/mcmaxwell/devdigest-plugins",
+      "license": "MIT",
+      "category": "development",
+      "keywords": [
+        "agents",
+        "spec",
+        "plan",
+        "specification",
+        "ears",
+        "implementation",
+        "verification",
+        "retro",
+        "workflow",
+        "sdd"
+      ]
     }
   ]
 }

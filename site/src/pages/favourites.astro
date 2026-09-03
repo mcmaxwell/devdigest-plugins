@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import Favourites from '../components/Favourites';
+import { BASE } from '../lib/catalog';
+import { t } from '../i18n';
+---
+<Base title={t('favourites')} current="favourites">
+  <div class="wrap" data-needs-storage>
+    <h1 style="margin-bottom:var(--space-6)" data-t="favourites">{t('favourites')}</h1>
+    <Favourites client:load base={BASE} />
+  </div>
+</Base>
