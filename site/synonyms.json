@@ -1,0 +1,11 @@
+{
+  "_comment": "Query-term synonyms. Keys are what a visitor may type; values are the index words searched as well.",
+  "pr": ["pull request", "review"],
+  "docs": ["documentation"],
+  "spec": ["specification"],
+  "retro": ["retrospective"],
+  "auth": ["authentication", "authorization"],
+  "db": ["database"],
+  "ci": ["workflow", "pipeline"],
+  "lint": ["linter", "boundaries"]
+}

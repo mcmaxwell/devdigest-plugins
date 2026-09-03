@@ -1,0 +1,67 @@
+---
+// Page shell: head metadata, header, offline banner, footer, palette island, enhancement script.
+import '../styles/global.css';
+import { CATALOG, BASE, url } from '../lib/catalog';
+import { t } from '../i18n';
+import Palette from '../components/Palette';
+
+interface Props { title: string; description?: string; artifactId?: string; current?: 'catalogue' | 'collections' | 'new' | 'favourites' | 'settings' }
+const { title, description = 'Claude Code plugins, skills, agents, commands and hooks for the DevDigest review workflow.', artifactId, current } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const og = new URL(url('og/default.png'), Astro.site);
+const nav: [string, string, Props['current']][] = [['catalogue', url('/'), 'catalogue'], ['collections', url('collections/'), 'collections'], ['whatsNew', url('new/'), 'new'], ['favourites', url('favourites/'), 'favourites'], ['settings', url('settings/'), 'settings']];
+---
+<!doctype html>
+<html lang="en" data-theme="dark" data-base={BASE}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title} · {CATALOG.marketplace}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" type="application/rss+xml" title={`${CATALOG.marketplace} releases`} href={url('feed.xml')} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={og} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="color-scheme" content="dark light" />
+    <script is:inline>
+      // Theme before first paint: stored choice, else the system preference, else dark.
+      try { var s = localStorage.getItem('ddp:theme'); var pref = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'; document.documentElement.dataset.theme = s ? JSON.parse(s) : pref; } catch (e) {}
+    </script>
+  </head>
+  <body data-artifact={artifactId}>
+    <div class="banner" data-offline hidden data-t="offline">{t('offline')}</div>
+    <header class="nav">
+      <a href={url('/')} class="nav-brand">{CATALOG.marketplace}</a>
+      {nav.map(([key, href, id]) => (
+        <a href={href} aria-current={current === id ? 'page' : undefined} data-t={key} data-needs-storage={id === 'favourites' ? '' : undefined}>{t(key)}</a>
+      ))}
+      <div class="nav-tools">
+        <button class="btn btn-secondary btn-sm" data-palette-open aria-label={t('palette')} data-t-attr="aria-label:palette" style="font-family:var(--font-body);font-size:12px;gap:8px">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path></svg>
+          <kbd style="font-size:11px;opacity:.7"><span data-modkey>Ctrl</span> K</kbd>
+        </button>
+        <button class="btn btn-icon btn-secondary" data-theme-toggle aria-label={t('theme')} data-t-attr="aria-label:theme">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <slot />
+
+    <footer class="site">
+      <span><span data-t="builtFrom">{t('builtFrom')}</span> <code>{CATALOG.shortSha}</code> · {CATALOG.buildDate}</span>
+      <a href={url('catalog.json')}><code>catalog.json</code></a>
+      <a href={url('search-index.json')}><code>search-index.json</code></a>
+      <a href={url('feed.xml')}><code>feed.xml</code></a>
+      <a href={url('llms.txt')}><code>llms.txt</code></a>
+      <a href={`https://github.com/${CATALOG.repo}`} target="_blank" rel="noopener" style="margin-left:auto">GitHub</a>
+    </footer>
+
+    <Palette client:idle base={BASE} />
+    <script src="../scripts/enhance.ts"></script>
+  </body>
+</html>

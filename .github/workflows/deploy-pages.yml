@@ -1,15 +1,17 @@
-name: Deploy site
+name: Site
 
-# Builds site/ and publishes it to GitHub Pages.
-# - On every push to main: the normal release path.
-# - On workflow_dispatch: run it against any branch or tag to redeploy that
-#   revision. scripts/rollback.mjs --site <ref> tags a known-good commit and
-#   dispatches this workflow on the tag.
-# The jobs skip themselves until site/package.json exists.
+# Two jobs, shown separately from the "Validate" workflow so a site failure is
+# never confused with a marketplace validation failure.
+# - "Build site": on every pull request and every push to main. Builds the
+#   catalogue and the static site and keeps the result as an artifact.
+# - "Deploy to GitHub Pages": on push to main only, or when dispatched by hand
+#   (scripts/rollback.mjs --site <ref> tags a known-good commit and dispatches
+#   this workflow on the tag).
 
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -18,42 +20,47 @@ permissions:
   id-token: write
 
 concurrency:
-  group: pages
+  group: pages-${{ github.ref }}
   cancel-in-progress: false
 
 jobs:
   build:
+    name: Build site
     runs-on: ubuntu-latest
-    outputs:
-      present: ${{ steps.site.outputs.present }}
+    defaults:
+      run:
+        working-directory: site
     steps:
       - uses: actions/checkout@v4
-      - id: site
-        name: Detect site
-        run: |
-          if [ -f site/package.json ]; then echo present=true >> "$GITHUB_OUTPUT"; else echo present=false >> "$GITHUB_OUTPUT"; echo "site/ not present yet, nothing to deploy"; fi
-      - if: steps.site.outputs.present == 'true'
-        uses: actions/setup-node@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: npm
           cache-dependency-path: site/package-lock.json
-      - if: steps.site.outputs.present == 'true'
+      - name: Install
         run: npm ci
-        working-directory: site
-      - if: steps.site.outputs.present == 'true'
-        run: npm run build
-        working-directory: site
+      - name: Build catalogue
+        run: npm run catalog
         env:
           SITE_BASE_URL: https://mcmaxwell.github.io/devdigest-plugins
-      - if: steps.site.outputs.present == 'true'
-        uses: actions/upload-pages-artifact@v3
+      - name: Type check
+        run: npm run check
+      - name: Build site
+        run: npm run build
+        env:
+          SITE_BASE_URL: https://mcmaxwell.github.io/devdigest-plugins
+      - name: Catalogue summary
+        run: node -e "const c=require('./public/catalog.json');console.log(c.records.length+' records from '+c.commit.slice(0,7))"
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: site/dist
 
   deploy:
+    name: Deploy to GitHub Pages
     needs: build
-    if: needs.build.outputs.present == 'true'
+    if: github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     environment:
       name: github-pages

@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// Fails when any tracked text file contains letters outside the Latin script.
+// Fails when any tracked text file contains letters outside the Latin script,
+// or an em dash (this repository writes a plain "-").
 // The marketplace, its plugins and its docs are English-only; this is the
 // mechanical half of that rule.
 //
@@ -17,16 +18,18 @@ const TEXT_EXTENSIONS = new Set([".md", ".json", ".yml", ".yaml", ".mjs", ".js",
 const TEXT_BASENAMES = new Set(["LICENSE", "CLAUDE.md", ".englishcheckignore"]);
 const NON_LATIN_LETTER = /(?!\p{Script=Latin})\p{L}/u;
 const LINE_MARKER = "english-check: ignore";
+const EM_DASH = "\u2014";
 
 export function findNonEnglish(text) {
   const hits = [];
   text.split("\n").forEach((line, i) => {
     if (line.includes(LINE_MARKER)) return;
     const m = NON_LATIN_LETTER.exec(line);
-    if (!m) return;
-    const col = m.index;
+    const dash = line.indexOf(EM_DASH);
+    if (!m && dash === -1) return;
+    const col = m ? m.index : dash;
     const from = Math.max(0, col - 20);
-    hits.push({ line: i + 1, col: col + 1, excerpt: line.slice(from, col + 40).trim() });
+    hits.push({ line: i + 1, col: col + 1, kind: m ? "non-Latin text" : "em dash", excerpt: line.slice(from, col + 40).trim() });
   });
   return hits;
 }
@@ -75,8 +78,8 @@ if (invokedDirectly) {
     if (json) {
       console.log(JSON.stringify({ checked, findings }, null, 2));
     } else {
-      for (const f of findings) console.log(`${f.file}:${f.line}:${f.col}: non-Latin text: "${f.excerpt}"`);
-      console.log(findings.length ? `\n${findings.length} finding(s) in ${checked} file(s). Everything in this repository is written in English; translate the text or list a deliberate exception in .englishcheckignore.` : `English-only check passed (${checked} files).`);
+      for (const f of findings) console.log(`${f.file}:${f.line}:${f.col}: ${f.kind}: "${f.excerpt}"`);
+      console.log(findings.length ? `\n${findings.length} finding(s) in ${checked} file(s). Everything in this repository is written in English with plain dashes; translate the text, replace the em dash, or list a deliberate exception in .englishcheckignore.` : `English-only check passed (${checked} files).`);
     }
     if (findings.length) process.exit(1);
   });

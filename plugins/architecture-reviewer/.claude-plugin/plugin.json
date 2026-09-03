@@ -1,0 +1,14 @@
+{
+  "name": "architecture-reviewer",
+  "version": "0.1.0",
+  "description": "Read-only architecture review of a change against the boundaries your project writes down and the generic layering rules of the paved-path skills. Use after an implementation to get findings with path:line evidence and a cited rule for each.",
+  "author": {
+    "name": "mcmaxwell",
+    "url": "https://github.com/mcmaxwell"
+  },
+  "homepage": "https://github.com/mcmaxwell/devdigest-plugins/tree/main/plugins/architecture-reviewer",
+  "repository": "https://github.com/mcmaxwell/devdigest-plugins",
+  "license": "MIT",
+  "keywords": ["architecture", "review", "boundaries", "layering", "dependency-cruiser", "agent", "read-only", "evidence"],
+  "dependencies": ["engineering-paved-path"]
+}

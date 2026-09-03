@@ -1,0 +1,22 @@
+{
+  "catalogue": "Catalogue", "collections": "Collections", "whatsNew": "What's new", "favourites": "Favourites", "settings": "Settings snippet", "theme": "Toggle theme", "palette": "Command palette",
+  "title": "Find a plugin, skill, agent or command", "subtitle": "One search across everything in devdigest-plugins. Read what it does, copy the install command, go.",
+  "searchPlaceholder": "Try \u201cskill for PR review\u201d or \u201chook that runs lint\u201d", "loadingIndex": "Loading the search index. The list below is already navigable.",
+  "indexFailed": "The search index failed to load.", "indexFailedBody": "Pages, lists and collections still work. Reload to try again, or browse the full list.", "fullList": "Browse the full list", "truncated": "Query shortened to 200 characters.",
+  "all": "All", "plugin": "Plugin", "skill": "Skill", "agent": "Agent", "command": "Command", "hook": "Hook", "mcp-server": "MCP server", "pluginsWord": "plugins",
+  "typeFromQuery": "from your query", "clear": "Clear", "filters": "Filters", "category": "Category", "parentPlugin": "Plugin", "keyword": "Keyword", "has": "Contains", "hasAgents": "Has agents", "hasHooks": "Has hooks", "hasMcp": "Has MCP servers",
+  "results": "results", "sort": "Sort", "relevance": "Relevance", "byName": "Name", "recent": "Recent",
+  "noResults": "Nothing matches", "noResultsBody": "No artifact matches", "noResultsHint": "Tell us what you looked for and we will consider adding it.", "requestSkill": "Request a skill", "recentlyChanged": "Recently changed",
+  "install": "Install", "copied": "Copied", "source": "Source", "copyRaw": "Copy raw", "report": "Report a problem", "related": "Related", "frontmatter": "Frontmatter", "files": "Files", "components": "Components", "changelog": "Changelog",
+  "noChangelog": "This plugin has no changelog yet, so it has no items in the feed.", "trust": "Trust",
+  "trustBody": "Plugins run code in your Claude Code session: hooks execute shell commands, MCP servers start processes, skills and agents shape what the model does. Read the source before you install.",
+  "viewSource": "Source at build commit", "about": "About", "license": "License", "homepage": "Homepage", "author": "Author", "external": "External source: this plugin lives outside the repository, so only its marketplace entry is shown.",
+  "events": "Hook events", "event": "Event", "matcher": "Matcher", "commandLabel": "Command", "env": "Environment variables", "envNote": "Names only. Values are never shown.",
+  "version": "Version", "lastChanged": "Changed", "validated": "Validated", "stale": "Stale", "staleTitle": "Not touched for over 180 days", "validatedTitle": "Passed strict validation at the last build", "dateFallback": "date is the build date; no git history was available",
+  "installCmd": "Install command", "snippet": ".claude/settings.json", "selectPlugins": "Tick the plugins your project needs. Commit the fragment and everyone who opens the repository gets the same set.", "noneSelected": "Select at least one plugin to generate the snippet.", "copySnippet": "Copy snippet",
+  "feed": "RSS", "whatsNewIntro": "Every released version of every plugin, newest first.", "releases": "releases",
+  "notFound": "Page not found", "notFoundBody": "This artifact may have been renamed or rolled back. Search for it instead.", "searchFor": "Search for",
+  "offline": "You are offline. Pages you have already opened still work.", "palettePlaceholder": "Jump to a plugin, skill, agent or command\u2026", "paletteEmpty": "No matches for",
+  "recents": "Recently viewed", "favEmpty": "No favourites yet. Press the star on any card and it will be here on your next visit, in this browser.", "recentsEmpty": "Nothing viewed yet.",
+  "collectionsIntro": "Curated sets of plugins with a ready settings fragment.", "builtFrom": "Built from", "copyFallback": "Copy this command", "close": "Close", "navigate": "navigate", "open": "open", "favourite": "Favourite", "favourited": "Favourited"
+}

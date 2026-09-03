@@ -1,0 +1,26 @@
+{
+  "name": "engineering-paved-path",
+  "version": "0.1.0",
+  "description": "The shared engineering skills every agent in the devdigest-plugins family follows: layered backend architecture, frontend organisation, per-module INSIGHTS.md lessons, Mermaid diagrams and OWASP security.",
+  "author": {
+    "name": "mcmaxwell",
+    "url": "https://github.com/mcmaxwell"
+  },
+  "homepage": "https://github.com/mcmaxwell/devdigest-plugins/tree/main/plugins/engineering-paved-path",
+  "repository": "https://github.com/mcmaxwell/devdigest-plugins",
+  "license": "MIT",
+  "keywords": [
+    "architecture",
+    "onion-architecture",
+    "ports-and-adapters",
+    "frontend",
+    "react",
+    "nextjs",
+    "insights",
+    "lessons-learned",
+    "mermaid",
+    "diagrams",
+    "security",
+    "owasp"
+  ]
+}

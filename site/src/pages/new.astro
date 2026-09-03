@@ -1,0 +1,33 @@
+---
+// "What's new" (AC-33): every plugin release, newest first, with the feed link.
+import Base from '../layouts/Base.astro';
+import { PLUGINS, url, artifactUrl } from '../lib/catalog';
+import { t } from '../i18n';
+const plugins = [...PLUGINS].sort((a, b) => ((b.details.changelog?.[0]?.date) ?? '').localeCompare((a.details.changelog?.[0]?.date) ?? ''));
+---
+<Base title={t('whatsNew')} current="new" description={t('whatsNewIntro')}>
+  <div class="wrap-narrow">
+    <div class="row between wrap-row" style="align-items:flex-end">
+      <div><h1 data-t="whatsNew">{t('whatsNew')}</h1><p class="text-muted" style="margin:0" data-t="whatsNewIntro">{t('whatsNewIntro')}</p></div>
+      <a class="btn btn-secondary" href={url('feed.xml')} style="font-family:var(--font-body);font-size:13px"><code>feed.xml</code> · RSS</a>
+    </div>
+    <hr class="hr" />
+    {plugins.map((p) => (
+      <section style="display:grid;grid-template-columns:200px 1fr;gap:var(--space-4);padding:var(--space-4) 0;border-bottom:1px solid var(--color-divider)">
+        <div>
+          <a href={artifactUrl(p.id)} style="font-family:var(--font-heading);font-size:22px;font-weight:600;text-decoration:none;color:inherit">{p.displayName}</a>
+          <div class="card-meta">{p.details.changelog?.length ?? 0} <span data-t="releases">{t('releases')}</span></div>
+        </div>
+        <div class="stack" style="gap:var(--space-3)">
+          {!p.details.changelog ? <p class="text-muted" style="margin:0;font-size:13.5px" data-t="noChangelog">{t('noChangelog')}</p> : null}
+          {(p.details.changelog ?? []).map((rel) => (
+            <div>
+              <div class="row tnum" style="align-items:baseline"><span style="font-family:var(--font-heading);font-size:18px;font-weight:600">v{rel.version}</span><span style="font-size:12px;opacity:.55">{rel.date}</span></div>
+              <ul style="margin:4px 0 0;padding-left:18px;font-size:13.5px">{rel.notes.map((n) => <li>{n}</li>)}</ul>
+            </div>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+</Base>

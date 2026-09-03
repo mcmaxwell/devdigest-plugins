@@ -1,0 +1,27 @@
+{
+  "name": "sdd-engineering",
+  "version": "0.1.0",
+  "description": "Spec Driven Development for Claude Code: use it when a feature should go from idea to an EARS spec, an approved plan, a reviewed implementation, a coverage verdict and a retro, each step leaving a file in the repository.",
+  "author": {
+    "name": "mcmaxwell",
+    "url": "https://github.com/mcmaxwell"
+  },
+  "homepage": "https://github.com/mcmaxwell/devdigest-plugins/tree/main/plugins/sdd-engineering",
+  "repository": "https://github.com/mcmaxwell/devdigest-plugins",
+  "license": "MIT",
+  "keywords": [
+    "sdd",
+    "spec-driven-development",
+    "spec",
+    "specification",
+    "ears",
+    "plan",
+    "implementation",
+    "verification",
+    "review",
+    "retro",
+    "workflow",
+    "agents"
+  ],
+  "dependencies": ["research-tools", "architecture-reviewer", "engineering-paved-path"]
+}

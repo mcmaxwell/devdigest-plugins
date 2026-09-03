@@ -9,6 +9,7 @@
   "scripts": {
     "validate": "claude plugin validate . --strict",
     "check:english": "node scripts/check-english.mjs",
+    "check:portable": "node scripts/check-portable.mjs",
     "test": "node --test scripts/*.test.mjs",
     "release": "node scripts/release.mjs",
     "rollback": "node scripts/rollback.mjs"

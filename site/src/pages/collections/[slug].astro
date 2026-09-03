@@ -1,0 +1,26 @@
+---
+// One page per collection (AC-30) with its settings fragment.
+import Base from '../../layouts/Base.astro';
+import { Card } from '../../components/Card';
+import { CATALOG, BY_ID, BASE, url, settingsSnippet, type Collection } from '../../lib/catalog';
+import { DICTS, t } from '../../i18n';
+
+export function getStaticPaths() { return CATALOG.collections.map((c) => ({ params: { slug: c.slug }, props: { c } })); }
+const { c } = Astro.props as { c: Collection };
+const items = c.plugins.map((n) => BY_ID.get(n)!);
+const snippet = settingsSnippet(c.plugins);
+---
+<Base title={c.title} current="collections" description={c.description}>
+  <div class="wrap" style="padding-top:var(--space-6)">
+    <div class="card-meta" style="font-size:13px;margin-bottom:var(--space-4)"><a href={url('collections/')} data-t="collections">{t('collections')}</a><span style="opacity:.4">/</span><span>{c.title}</span></div>
+    <h1>{c.title}</h1>
+    <p class="text-muted" style="max-width:70ch;margin-bottom:var(--space-6)">{c.description}</p>
+    <div class="two-col">
+      <div class="grid-cards-sm" style="grid-template-columns:repeat(auto-fill,minmax(280px,1fr))">{items.map((r) => <Card r={r} base={BASE} t={DICTS.en} />)}</div>
+      <aside>
+        <div class="row between" style="margin-bottom:var(--space-2)"><h6 style="margin:0">{t('snippet')}</h6><button class="btn btn-primary btn-sm" data-copy={snippet} data-t="copySnippet">{t('copySnippet')}</button></div>
+        <pre style="font-size:12px">{snippet}</pre>
+      </aside>
+    </div>
+  </div>
+</Base>

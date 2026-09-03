@@ -1,0 +1,13 @@
+{
+  "name": "research-tools",
+  "version": "0.1.0",
+  "description": "Read-only researcher agent that answers questions about the current repository or about external libraries, APIs and specs with cited evidence. Use before writing code when a fact needs verifying.",
+  "author": {
+    "name": "mcmaxwell",
+    "url": "https://github.com/mcmaxwell"
+  },
+  "homepage": "https://github.com/mcmaxwell/devdigest-plugins/tree/main/plugins/research-tools",
+  "repository": "https://github.com/mcmaxwell/devdigest-plugins",
+  "license": "MIT",
+  "keywords": ["research", "researcher", "agent", "read-only", "citations", "codebase", "investigation"]
+}

@@ -77,10 +77,27 @@ test("findNonEnglish flags non-Latin letters and honours the line marker", () =>
   assert.match(hits[0].excerpt, /\u043f\u0435\u0440\u0435\u0432\u0456\u0440/);
 });
 
+test("findNonEnglish flags an em dash", () => {
+  const hits = findNonEnglish("plain - dash\nlong \u2014 dash\n");
+  assert.deepEqual(hits.map((h) => [h.line, h.kind]), [[2, "em dash"]]);
+});
+
 test("isIgnored supports exact paths, directory prefixes and extensions", () => {
   const rules = ["LICENSE", "docs/temp/", "*.svg"];
   assert.ok(isIgnored("LICENSE", rules));
   assert.ok(isIgnored("docs/temp/notes.md", rules));
   assert.ok(isIgnored("site/public/logo.svg", rules));
   assert.ok(!isIgnored("docs/specs/site.md", rules));
+});
+
+import { findForbidden, skillName } from "./check-portable.mjs";
+
+test("findForbidden flags origin-project tokens but allows the marketplace name", () => {
+  const hits = findForbidden("see mcmaxwell/devdigest-plugins\nthe DevDigest server\nreviewer-core/src\n/Users/x/y\nfine line\n");
+  assert.deepEqual(hits.map((h) => [h.line, h.token]), [[2, "devdigest"], [3, "reviewer-core"], [4, "/users/"]]);
+});
+
+test("skillName reads the frontmatter name", () => {
+  assert.equal(skillName("---\nname: my-skill\ndescription: x\n---\nbody"), "my-skill");
+  assert.equal(skillName("no frontmatter"), null);
 });

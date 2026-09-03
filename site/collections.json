@@ -1,0 +1,8 @@
+[
+  {
+    "slug": "plugin-authors",
+    "title": "Plugin authors",
+    "description": "For contributors adding a plugin to this marketplace.",
+    "plugins": ["example-plugin"]
+  }
+]

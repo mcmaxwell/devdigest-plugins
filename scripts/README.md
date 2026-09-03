@@ -7,6 +7,7 @@ Node 22, no dependencies. Run from anywhere inside the repository.
 | `release.mjs` | Cut a plugin release: bump, changelog, validate, commit, tag. |
 | `rollback.mjs` | Republish an earlier plugin tag as a new version, or redeploy the site from a known-good commit. |
 | `check-english.mjs` | Fail on any non-Latin letters in tracked text files. |
+| `check-portable.mjs` | Fail on origin-project names, packages or machine paths inside plugins, and on a skill name shipped by two plugins. |
 | `lib.mjs` | Shared helpers, unit-tested in `lib.test.mjs` (`node --test scripts/*.test.mjs`). |
 
 ## Why releases need a script
@@ -79,3 +80,14 @@ Exceptions:
 - `english-check: ignore` anywhere on a line exempts that line.
 
 Exit code 1 on findings, so CI and the release script stop.
+
+## check-portable.mjs
+
+```
+node scripts/check-portable.mjs [plugins/<name> ...] [--json]
+```
+
+Scans every file of every plugin for the tokens listed at the top of the script: the name of the project the agents were ported from, its package names, its scripts, and machine paths.
+The marketplace's own name is allowed.
+It also reads the `name` of every `SKILL.md` and fails when two plugins ship the same skill, because a shared skill belongs in exactly one dependency plugin.
+Exit code 1 on findings.

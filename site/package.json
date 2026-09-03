@@ -1,0 +1,29 @@
+{
+  "name": "devdigest-plugins-site",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "catalog": "node scripts/build-catalog.mjs",
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build-catalog.mjs && astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "@astrojs/react": "^4.2.0",
+    "@astrojs/sitemap": "^3.3.0",
+    "astro": "^5.7.0",
+    "gray-matter": "^4.0.3",
+    "marked": "^15.0.0",
+    "minisearch": "^7.1.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "typescript": "^5.6.0"
+  }
+}

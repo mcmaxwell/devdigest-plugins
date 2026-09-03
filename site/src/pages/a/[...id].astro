@@ -1,0 +1,132 @@
+---
+// One static page per artifact (AC-21..27). Readable with scripts disabled; buttons are enhanced by enhance.ts.
+import Base from '../../layouts/Base.astro';
+import { Card, HealthTag, Star, External } from '../../components/Card';
+import { RECORDS, BY_ID, CATALOG, BASE, artifactUrl, url, reportUrl, type Rec } from '../../lib/catalog';
+import { renderMarkdown } from '../../lib/markdown';
+import { DICTS, t } from '../../i18n';
+
+export function getStaticPaths() { return RECORDS.map((r) => ({ params: { id: r.id }, props: { r } })); }
+const { r } = Astro.props as { r: Rec };
+const en = DICTS.en;
+const d = r.details;
+const components = (d.components ?? []).map((id) => BY_ID.get(id)!).filter(Boolean);
+const related = r.related.map((id) => BY_ID.get(id)!).filter(Boolean);
+const front = r.frontmatter ? Object.entries(r.frontmatter).map(([k, v]) => [k, typeof v === 'string' ? v : JSON.stringify(v)] as [string, string]) : [];
+const raw = r.body != null ? `---\n${front.map(([k, v]) => `${k}: ${v}`).join('\n')}\n---\n${r.body}` : null;
+const fileTree = r.files?.length ? `plugins/${r.plugin}/\n` + r.files.map((f, i, a) => (i === a.length - 1 ? '└── ' : '├── ') + f).join('\n') : null;
+const html = r.body ? renderMarkdown(r.body) : null;
+const bodyFile = r.path?.split('/').pop() ?? '';
+---
+<Base title={`${r.displayName} · ${t(r.type)}`} description={r.description} artifactId={r.id}>
+  <div class="wrap" style="padding-top:var(--space-6)">
+    <div class="card-meta" style="font-size:13px;margin-bottom:var(--space-4)">
+      <a href={url('/')} data-t="catalogue">{t('catalogue')}</a><span style="opacity:.4">/</span>
+      {r.type !== 'plugin' ? <><a href={artifactUrl(r.plugin)}>{r.plugin}</a><span style="opacity:.4">/</span></> : null}
+      <span data-t={r.type}>{t(r.type)}</span>
+    </div>
+
+    <div class="row between wrap-row" style="align-items:flex-start;gap:var(--space-6)">
+      <div style="flex:1 1 480px;min-width:0">
+        <div class="row" style="margin-bottom:var(--space-1)"><span class="card-kicker" data-t={r.type}>{t(r.type)}</span><HealthTag r={r} t={en} /></div>
+        <h1 style="font-size:48px;margin-bottom:var(--space-2);overflow-wrap:anywhere">{r.displayName}</h1>
+        <p style="font-size:17px;max-width:70ch;margin:0;opacity:.85;text-align:justify;text-wrap:pretty">{r.description}</p>
+        <div class="card-meta tnum" style="margin-top:var(--space-3);gap:var(--space-3);font-size:12.5px">
+          {r.version ? <span><span data-t="version">{t('version')}</span> {r.version}</span> : null}<span>{r.category}</span><span><span data-t="lastChanged">{t('lastChanged')}</span> {r.lastChanged}</span>
+        </div>
+        <div class="tags" style="margin-top:var(--space-2)">{r.keywords.map((k) => <a href={`${url('/')}?keyword=${encodeURIComponent(k)}`} class="tag tag-neutral">{k}</a>)}</div>
+        {d.external ? <p class="notice" style="margin-top:var(--space-4);font-size:13.5px" data-t="external">{t('external')}</p> : null}
+      </div>
+      <div class="stack" style="flex:0 0 240px">
+        <button class="btn btn-primary" data-copy={r.install} data-t="install">{t('install')}</button>
+        {raw ? <button class="btn btn-secondary" data-copy={raw} data-t="copyRaw">{t('copyRaw')}</button> : null}
+        <button class="btn btn-secondary" data-fav={r.id} data-needs-storage aria-pressed="false"><Star size={14} /><span data-fav-label>{t('favourite')}</span></button>
+        <a class="btn btn-ghost" style="font-size:13px" href={reportUrl(r)} target="_blank" rel="noopener" data-t="report">{t('report')}</a>
+      </div>
+    </div>
+
+    <hr class="hr" />
+
+    <div class="two-col">
+      <div class="stack" style="gap:var(--space-6);min-width:0">
+        {r.type === 'plugin' ? (
+          <>
+            <section>
+              <h6 style="margin-bottom:var(--space-3)"><span data-t="components">{t('components')}</span> <span style="opacity:.7">{components.length}</span></h6>
+              <div class="grid-cards-sm">
+                {components.map((c) => (
+                  <a href={artifactUrl(c.id)} class="card" style="text-decoration:none;color:inherit;gap:4px">
+                    <span class="card-kicker" data-t={c.type}>{t(c.type)}</span><span class="card-title" style="font-size:17px">{c.displayName}</span><span class="card-body clamp-2">{c.description}</span>
+                  </a>
+                ))}
+              </div>
+            </section>
+            <section class="notice">
+              <div style="font-family:var(--font-heading);font-weight:600;font-size:18px;color:var(--color-accent);margin-bottom:4px" data-t="trust">{t('trust')}</div>
+              <p style="margin:0;font-size:13.5px;opacity:.85;text-align:justify"><span data-t="trustBody">{t('trustBody')}</span> {r.sourceUrl ? <a href={r.sourceUrl} target="_blank" rel="noopener"><span data-t="viewSource">{t('viewSource')}</span> {CATALOG.shortSha}</a> : null}</p>
+            </section>
+            <section>
+              <h6 style="margin-bottom:var(--space-3)" data-t="changelog">{t('changelog')}</h6>
+              {!d.changelog ? <p class="text-muted" style="font-size:13.5px" data-t="noChangelog">{t('noChangelog')}</p> : null}
+              {(d.changelog ?? []).map((rel) => (
+                <div style="display:grid;grid-template-columns:120px 1fr;gap:var(--space-3);padding:var(--space-2) 0;border-bottom:1px solid var(--color-divider)">
+                  <div class="tnum"><div style="font-family:var(--font-heading);font-size:20px;font-weight:600">v{rel.version}</div><div style="font-size:12px;opacity:.55">{rel.date}</div></div>
+                  <ul style="margin:0;padding-left:18px;font-size:13.5px">{rel.notes.map((n) => <li>{n}</li>)}</ul>
+                </div>
+              ))}
+            </section>
+          </>
+        ) : null}
+
+        {r.type === 'hook' ? (
+          <section>
+            <h6 style="margin-bottom:var(--space-3)" data-t="events">{t('events')}</h6>
+            <table class="table">
+              <thead><tr><th data-t="event">{t('event')}</th><th data-t="matcher">{t('matcher')}</th><th data-t="commandLabel">{t('commandLabel')}</th></tr></thead>
+              <tbody>{(d.hookEvents ?? []).map((h) => <tr><td><code>{h.event}</code></td><td><code>{h.matcher}</code></td><td><code style="font-size:12px">{h.command}</code></td></tr>)}</tbody>
+            </table>
+          </section>
+        ) : null}
+
+        {r.type === 'mcp-server' ? (
+          <section class="stack" style="gap:var(--space-4)">
+            <div><h6 style="margin-bottom:var(--space-2)" data-t="commandLabel">{t('commandLabel')}</h6><pre>{[d.command, ...(d.args ?? [])].join(' ')}</pre></div>
+            <div>
+              <h6 style="margin-bottom:var(--space-2)" data-t="env">{t('env')}</h6>
+              <div class="tags" style="gap:6px">{(d.mcpEnv ?? []).map((e) => <code class="tag tag-outline" style="font-size:12px">{e}</code>)}</div>
+              <p class="text-muted" style="font-size:12px;margin:var(--space-2) 0 0" data-t="envNote">{t('envNote')}</p>
+            </div>
+          </section>
+        ) : null}
+
+        {html ? <section class="prose"><h6 style="margin-bottom:var(--space-3)">{bodyFile}</h6><Fragment set:html={html} /></section> : null}
+      </div>
+
+      <aside class="stack" style="gap:var(--space-6);min-width:0">
+        <div><h6 style="margin-bottom:var(--space-2)" data-t="installCmd">{t('installCmd')}</h6><pre style="white-space:pre-wrap">{r.install}</pre></div>
+        {front.length ? (
+          <div><h6 style="margin-bottom:var(--space-2)" data-t="frontmatter">{t('frontmatter')}</h6>
+            <table class="table" style="font-size:12.5px"><tbody>{front.map(([k, v]) => <tr><td class="k"><code>{k}</code></td><td><code>{v}</code></td></tr>)}</tbody></table></div>
+        ) : null}
+        {fileTree ? <div><h6 style="margin-bottom:var(--space-2)" data-t="files">{t('files')}</h6><pre style="line-height:1.6">{fileTree}</pre></div> : null}
+        {r.type === 'plugin' ? (
+          <div><h6 style="margin-bottom:var(--space-2)" data-t="about">{t('about')}</h6>
+            <table class="table" style="font-size:12.5px"><tbody>
+              <tr><td class="k" data-t="license">{t('license')}</td><td>{d.license ?? '-'}</td></tr>
+              <tr><td class="k" data-t="author">{t('author')}</td><td>{d.authorUrl ? <a href={d.authorUrl} target="_blank" rel="noopener">{d.author}</a> : d.author ?? '-'}</td></tr>
+              <tr><td class="k" data-t="homepage">{t('homepage')}</td><td>{d.homepage ? <a href={d.homepage} target="_blank" rel="noopener">{d.homepage.replace('https://github.com/', '')}</a> : '-'}</td></tr>
+            </tbody></table></div>
+        ) : null}
+        {r.sourceUrl ? <a href={r.sourceUrl} target="_blank" rel="noopener" class="btn btn-secondary" style="width:100%;justify-content:space-between;font-family:var(--font-body);font-size:12.5px"><span data-t="viewSource">{t('viewSource')}</span><code style="opacity:.7">{CATALOG.shortSha}</code><External /></a> : null}
+        {related.length ? (
+          <div><h6 style="margin-bottom:var(--space-2)" data-t="related">{t('related')}</h6>
+            <div class="stack" style="gap:0">{related.map((x) => (
+              <a href={artifactUrl(x.id)} class="row between" style="padding:8px 0;border-bottom:1px solid var(--color-divider);text-decoration:none;color:inherit;font-size:13.5px">
+                <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{x.displayName}</span><span style="opacity:.5;font-size:11px;text-transform:uppercase;letter-spacing:.06em;flex:none" data-t={x.type}>{t(x.type)}</span>
+              </a>
+            ))}</div></div>
+        ) : null}
+      </aside>
+    </div>
+  </div>
+</Base>
